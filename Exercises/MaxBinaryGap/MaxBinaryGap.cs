@@ -7,16 +7,21 @@ namespace Exercise
         public static void Main(string[] args)
         {
             int[] values = {
-                1
-                ,5
-                ,16
-                ,19
-                ,1024
-                ,1162
-                ,561892
-                ,74901729
-                ,805306373
-                ,2147483647
+                805306373 
+                // 1
+                // ,5
+                // ,16
+                // ,19
+                // ,1024
+                // ,1162
+                // ,66561
+                // ,561892
+                // ,6291457
+                // ,74901729
+                // ,805306373
+                // ,1073741825
+                // ,1610612737
+                // ,2147483647
             };
 
             foreach (var n in values)
@@ -27,7 +32,8 @@ namespace Exercise
 
         public static void ExecuteSolution(int n)
         {
-            Console.WriteLine("{0} [{1}] = > {2}", n, Convert.ToString(n, 2), Solution(n));
+            Console.Write($"{n} [{Convert.ToString(n, 2)}] = > ");
+            Console.WriteLine($"{Solution(n)}");
         }
 
         public static int Solution(int N)
@@ -39,12 +45,12 @@ namespace Exercise
 
             while (N != 0)
             {
-                bool bit = (N % 2) == 1 ? false : true;
-                if (bit && inGap)
+                bool bit = (N % 2) == 1;
+                if (!bit && inGap)
                 {
                     gap++;
                 }
-                else if (!bit && inGap)
+                else if (bit && inGap)
                 {
                     if (gap > maxGap)
                     {
@@ -53,12 +59,17 @@ namespace Exercise
                     gap = 0;
                     inGap = false;
                 }
+                else if (bit && !inGap)
+                {
+                    potentialGap = true;
+                }
                 else if (!bit && potentialGap)
                 {
+                    gap = 1;
                     inGap = true;
                     potentialGap = false;
                 }
-                else if (bit && !inGap)
+                else if (bit && !potentialGap)
                 {
                     potentialGap = true;
                 }

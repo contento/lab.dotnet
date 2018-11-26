@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 
-namespace MaxBinaryGap
+namespace Exercise
 {
     public class Program
     {
@@ -33,7 +30,6 @@ namespace MaxBinaryGap
             Console.WriteLine("{0} [{1}] = > {2}", n, Convert.ToString(n, 2), Solution(n));
         }
 
-
         public static int Solution(int N)
         {
             int gap = 0;
@@ -44,7 +40,6 @@ namespace MaxBinaryGap
             while (N != 0)
             {
                 bool bit = (N % 2) == 1 ? false : true;
-                // System.Console.WriteLine("bit={0}", bit);
                 if (bit && inGap)
                 {
                     gap++;
@@ -69,7 +64,6 @@ namespace MaxBinaryGap
                 }
 
                 N = N >> 1;
-                // System.Console.WriteLine("N={0}", N);
             }
 
             return maxGap;

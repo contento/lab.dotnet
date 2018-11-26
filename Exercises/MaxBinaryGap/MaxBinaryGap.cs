@@ -7,6 +7,7 @@ namespace Exercise
         public static void Main(string[] args)
         {
             int[] values = {
+                0,
                 1
                 ,5
                 ,9
@@ -38,37 +39,28 @@ namespace Exercise
 
         public static int Solution(int n)
         {
-            int gap = 0;
+            int gap = -1;
             int maxGap = 0;
-            bool potentialGap = false;
-            bool inGap = false;
             // var binary = Convert.ToString(n, 2); // DEBUG
 
             while (n != 0)
             {
                 bool bit = (n % 2) == 1;
 
-                if (bit)
+                if (!bit)
                 {
-                    if (inGap)
+                    if (gap >= 0)
+                        gap++;
+                }
+                else
+                {
+                    if (gap == -1)
+                        gap = 0;
+                    else if (gap > 0)
                     {
                         if (gap > maxGap)
                             maxGap = gap;
                         gap = 0;
-                        inGap = false;
-                    }
-                    if (!potentialGap)
-                        potentialGap = true;
-                }
-                else
-                {
-                    if (inGap)
-                        gap++;
-                    else if (potentialGap)
-                    {
-                        gap = 1;
-                        inGap = true;
-                        potentialGap = false;
                     }
                 }
 

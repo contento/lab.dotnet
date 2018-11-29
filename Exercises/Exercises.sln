@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.106
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaxBinaryGap", "MaxBinaryGap\MaxBinaryGap.csproj", "{0090620F-913F-45B7-846A-69165E6A4B80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaxBinaryGap", "MaxBinaryGap\MaxBinaryGap.csproj", "{0090620F-913F-45B7-846A-69165E6A4B80}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaxSliceSum", "MaxSliceSum\MaxSliceSum.csproj", "{61156BCE-4D5E-4628-A2E1-777FA13A5DE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0090620F-913F-45B7-846A-69165E6A4B80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0090620F-913F-45B7-846A-69165E6A4B80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0090620F-913F-45B7-846A-69165E6A4B80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61156BCE-4D5E-4628-A2E1-777FA13A5DE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61156BCE-4D5E-4628-A2E1-777FA13A5DE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61156BCE-4D5E-4628-A2E1-777FA13A5DE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61156BCE-4D5E-4628-A2E1-777FA13A5DE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

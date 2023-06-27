@@ -5,19 +5,32 @@ namespace Encryption;
 
 public class DataEncryptionHelper
 {
-    private readonly byte[] _key;
+    private static DataEncryptionHelper? _instance;
+    private static readonly object Lock = new();
 
-    public DataEncryptionHelper(byte[] key)
+    private DataEncryptionHelper()
     {
-        if (key.Length != 16 && key.Length != 24 && key.Length != 32)
-            throw new ArgumentException("Key must be 128, 192, or 256 bits.");
-
-        this._key = key;
     }
 
-    public byte[] EncryptData(string plainText)
+    public static DataEncryptionHelper? Instance
     {
-        using var aesGcm = new AesGcm(_key);
+        get
+        {
+            if (_instance != null) return _instance;
+            lock (Lock)
+            {
+                _instance ??= new DataEncryptionHelper();
+            }
+
+            return _instance;
+        }
+    }
+
+    public byte[] Encrypt(string plainText, byte[] key)
+    {
+        ValidateKeyLength(key);
+
+        using var aesGcm = new AesGcm(key);
         var nonce = new byte[AesGcm.NonceByteSizes.MaxSize];
         RandomNumberGenerator.Fill(nonce);
 
@@ -27,7 +40,6 @@ public class DataEncryptionHelper
 
         aesGcm.Encrypt(nonce, plainBytes, cipherText, tag);
 
-        // Concatenate nonce, cipher text, and tag
         var result = new byte[nonce.Length + cipherText.Length + tag.Length];
         Buffer.BlockCopy(nonce, 0, result, 0, nonce.Length);
         Buffer.BlockCopy(cipherText, 0, result, nonce.Length, cipherText.Length);
@@ -36,9 +48,11 @@ public class DataEncryptionHelper
         return result;
     }
 
-    public string DecryptData(byte[] cipherData)
+    public string Decrypt(byte[] cipherData, byte[] key)
     {
-        using var aesGcm = new AesGcm(_key);
+        ValidateKeyLength(key);
+
+        using var aesGcm = new AesGcm(key);
         var nonceSize = AesGcm.NonceByteSizes.MaxSize;
         var tagSize = AesGcm.TagByteSizes.MaxSize;
 
@@ -55,5 +69,11 @@ public class DataEncryptionHelper
         aesGcm.Decrypt(nonce, cipherText, tag, decryptedData);
 
         return Encoding.UTF8.GetString(decryptedData);
+    }
+
+    private static void ValidateKeyLength(IReadOnlyCollection<byte> key)
+    {
+        if (key.Count != 16 && key.Count != 24 && key.Count != 32)
+            throw new ArgumentException("Key must be 128, 192, or 256 bits.");
     }
 }

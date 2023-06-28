@@ -5,7 +5,7 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Encryption", "DotNet\DotNet.Encryption.csproj", "{64922491-2D17-439D-AE5D-86B021849679}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework.Encryption", "DotNetFramework.Encryption\DotNetFramework.Encryption.csproj", "{7664F7E0-CDDE-44FC-B765-35AFBC967879}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework.Encryption", "DotNetFramework\DotNetFramework.Encryption.csproj", "{7664F7E0-CDDE-44FC-B765-35AFBC967879}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,8 +10,11 @@ Console.WriteLine($"Key:\t\t{Convert.ToBase64String(key)}");
 
 var cipherData = DataEncryptionHelper.Instance?.Encrypt(plainText, key);
 
-if (cipherData != null)
+if (cipherData == null)
 {
-    var decryptedText = DataEncryptionHelper.Instance?.Decrypt(cipherData, key);
-    Console.WriteLine($"Decrypted text:\t{decryptedText}");
+    throw new Exception("Failed to encrypt data");
 }
+
+Console.WriteLine($"Cipher data:\t{Convert.ToBase64String(cipherData)}");
+var decryptedText = DataEncryptionHelper.Instance?.Decrypt(cipherData, key);
+Console.WriteLine($"Decrypted text:\t{decryptedText}");

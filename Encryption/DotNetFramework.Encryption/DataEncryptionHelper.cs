@@ -10,10 +10,10 @@ namespace DotNetFramework.Encryption
 {
     public class DataEncryptionHelper
     {
-        private static readonly Lazy<DataEncryptionHelper> Lazy =
+        private static readonly Lazy<DataEncryptionHelper> LazyInstance =
             new Lazy<DataEncryptionHelper>(() => new DataEncryptionHelper());
 
-        public static DataEncryptionHelper Instance => Lazy.Value;
+        public static DataEncryptionHelper Instance => LazyInstance.Value;
 
         private const int NonceSize = 12;
 

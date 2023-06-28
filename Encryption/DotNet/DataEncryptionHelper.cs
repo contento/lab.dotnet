@@ -5,26 +5,9 @@ namespace DotNet.Encryption;
 
 public class DataEncryptionHelper
 {
-    private static DataEncryptionHelper? _instance;
-    private static readonly object Lock = new();
+    private static readonly Lazy<DataEncryptionHelper> LazyInstance = new(() => new DataEncryptionHelper());
+    public static DataEncryptionHelper Instance => LazyInstance.Value;
 
-    private DataEncryptionHelper()
-    {
-    }
-
-    public static DataEncryptionHelper? Instance
-    {
-        get
-        {
-            if (_instance != null) return _instance;
-            lock (Lock)
-            {
-                _instance ??= new DataEncryptionHelper();
-            }
-
-            return _instance;
-        }
-    }
 
     public byte[] Encrypt(string plainText, byte[] key)
     {

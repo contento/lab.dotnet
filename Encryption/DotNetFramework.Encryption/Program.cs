@@ -23,9 +23,10 @@ namespace DotNetFramework.Encryption
 
             if (cipherData == null)
             {
-                throw new InvalidOperationException();
+                throw new Exception("Failed to encrypt data");
             }
 
+            Console.WriteLine($"Cipher data:\t{Convert.ToBase64String(cipherData)}");
             var decryptedText = DataEncryptionHelper.Instance?.Decrypt(cipherData, key);
             Console.WriteLine($"Decrypted text:\t{decryptedText}");
         }

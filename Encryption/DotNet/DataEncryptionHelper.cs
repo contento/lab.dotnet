@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Encryption;
+namespace DotNet.Encryption;
 
 public class DataEncryptionHelper
 {

@@ -1,5 +1,5 @@
 ﻿using System.Security.Cryptography;
-using Encryption;
+using DotNet.Encryption;
 
 const string plainText = "Hello World!";
 Console.WriteLine($"Plain text:\t{plainText}");

@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{63121B20-4DA3-42A1-8597-C1038C58CD7C}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>TestAsymetric</RootNamespace>
-    <AssemblyName>TestAsymetric</AssemblyName>
+    <RootNamespace>DotNetFramework.TestAsymmetric</RootNamespace>
+    <AssemblyName>DotNetFramework.TestAsymmetric</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -53,6 +53,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>if not exist "$(TargetDir)files" mkdir "$(TargetDir)files"

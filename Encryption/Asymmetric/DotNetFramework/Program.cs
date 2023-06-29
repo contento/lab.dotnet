@@ -2,12 +2,11 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Encodings;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Security;
 
-namespace TestAsymetric
+namespace DotNetFramework.TestAsymmetric
 {
     class Program
     {
@@ -17,7 +16,8 @@ namespace TestAsymetric
             Console.WriteLine($"Plain text:\t{plainText}");
 
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // When using the store make sure you mark the certificate as exportable !!!
+            // When using the store make sure you mark the certificate as exportable.
+            // (BouncyCastle needs it) !!!
             var cert = GetCertificate(fromFile: false);
 
             // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

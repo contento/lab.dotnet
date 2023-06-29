@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Encryption", "DotNet\DotNet.Encryption.csproj", "{64922491-2D17-439D-AE5D-86B021849679}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet.Encryption", "Symmetric\DotNet\DotNet.Encryption.csproj", "{64922491-2D17-439D-AE5D-86B021849679}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework.Encryption", "DotNetFramework\DotNetFramework.Encryption.csproj", "{7664F7E0-CDDE-44FC-B765-35AFBC967879}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework.Encryption", "Symmetric\DotNetFramework\DotNetFramework.Encryption.csproj", "{7664F7E0-CDDE-44FC-B765-35AFBC967879}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAsymetric", "TestAsymetric\TestAsymetric.csproj", "{63121B20-4DA3-42A1-8597-C1038C58CD7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework.TestAsymmetric", "Asymmetric\DotNetFramework\DotNetFramework.TestAsymmetric.csproj", "{63121B20-4DA3-42A1-8597-C1038C58CD7C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{2998D384-AE14-4C9A-9B4E-502CB5F0FA24}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,6 +19,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Symmetric", "Symmetric", "{E15933F9-B2F6-4BA3-96BE-9265FAE37B2B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Asymmetric", "Asymmetric", "{CB551348-96C1-4DF4-8658-003C34EF5D52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Asymmetric", "Asymmetric\DotNet\DotNet.TestAsymmetric.csproj", "{329008FF-D665-4D8B-9B3B-62E2C09566D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +44,19 @@ Global
 		{63121B20-4DA3-42A1-8597-C1038C58CD7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63121B20-4DA3-42A1-8597-C1038C58CD7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63121B20-4DA3-42A1-8597-C1038C58CD7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{329008FF-D665-4D8B-9B3B-62E2C09566D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{329008FF-D665-4D8B-9B3B-62E2C09566D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{329008FF-D665-4D8B-9B3B-62E2C09566D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{329008FF-D665-4D8B-9B3B-62E2C09566D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{64922491-2D17-439D-AE5D-86B021849679} = {E15933F9-B2F6-4BA3-96BE-9265FAE37B2B}
+		{7664F7E0-CDDE-44FC-B765-35AFBC967879} = {E15933F9-B2F6-4BA3-96BE-9265FAE37B2B}
+		{63121B20-4DA3-42A1-8597-C1038C58CD7C} = {CB551348-96C1-4DF4-8658-003C34EF5D52}
+		{329008FF-D665-4D8B-9B3B-62E2C09566D9} = {CB551348-96C1-4DF4-8658-003C34EF5D52}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30253E36-3297-4322-8175-3660335AC93C}

@@ -82,9 +82,9 @@
             textBoxSecret.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             textBoxSecret.Location = new Point(30, 157);
             textBoxSecret.Name = "textBoxSecret";
+            textBoxSecret.ReadOnly = true;
             textBoxSecret.Size = new Size(1273, 39);
             textBoxSecret.TabIndex = 11;
-            textBoxSecret.Text = "Abracadabra";
             textBoxSecret.KeyDown += textBoxSecret_KeyDown;
             // 
             // label4

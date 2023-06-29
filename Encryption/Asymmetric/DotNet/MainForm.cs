@@ -95,7 +95,8 @@ namespace DotNet.TestAsymmetric
 
             // Encrypt the secret with the public key.
             var cipherSecretBytes = AsymmetricEncrypt(secretBytes);
-            textBoxCipherSecret.Text = Convert.ToBase64String(cipherSecretBytes ?? throw new InvalidOperationException());
+            textBoxCipherSecret.Text =
+                Convert.ToBase64String(cipherSecretBytes ?? throw new InvalidOperationException());
         }
 
         private void DoDecrypt()
@@ -123,63 +124,93 @@ namespace DotNet.TestAsymmetric
             return certs.Count > 0 ? certs[0] : null;
         }
 
-        private static byte[]? AsymmetricEncrypt(byte[] plainTextBytes)
+        private byte[]? AsymmetricEncrypt(byte[] plainTextBytes)
         {
-            // DO NOT USE ASYMMETRIC ENCRYPTION FOR LARGE DATA !!!
-            var rsaPublicKey = (_cert ?? throw new InvalidOperationException()).GetRSAPublicKey();
-            var cipherBytes = rsaPublicKey?.Encrypt(plainTextBytes, EncryptionPadding);
-            return cipherBytes;
+            if (!checkBoxBouncy.Checked)
+            {
+                // DO NOT USE ASYMMETRIC ENCRYPTION FOR LARGE DATA !!!
+                var rsaPublicKey = (_cert ?? throw new InvalidOperationException()).GetRSAPublicKey();
+                var cipherBytes = rsaPublicKey?.Encrypt(plainTextBytes, EncryptionPadding);
+                return cipherBytes;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        private static byte[]? AsymmetricDecrypt(byte[] cipherBytes)
+        private byte[]? AsymmetricDecrypt(byte[] cipherBytes)
         {
-            var rsaPrivateKey = (_cert ?? throw new InvalidOperationException()).GetRSAPrivateKey();
-            var clearBytes = rsaPrivateKey?.Decrypt(cipherBytes, EncryptionPadding);
-            return clearBytes;
+            if (!checkBoxBouncy.Checked)
+            {
+                var rsaPrivateKey = (_cert ?? throw new InvalidOperationException()).GetRSAPrivateKey();
+                var clearBytes = rsaPrivateKey?.Decrypt(cipherBytes, EncryptionPadding);
+                return clearBytes;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public byte[] SymmetricEncrypt(string plainText, byte[] key)
         {
             ValidateKeyLength(key);
 
-            using var aesGcm = new AesGcm(key);
-            var nonce = new byte[AesGcm.NonceByteSizes.MaxSize];
-            RandomNumberGenerator.Fill(nonce);
 
-            var plainBytes = Encoding.UTF8.GetBytes(plainText);
-            var cipherText = new byte[plainBytes.Length];
-            var tag = new byte[AesGcm.TagByteSizes.MaxSize];
+            if (!checkBoxBouncy.Checked)
+            {
+                using var aesGcm = new AesGcm(key);
+                var nonce = new byte[AesGcm.NonceByteSizes.MaxSize];
+                RandomNumberGenerator.Fill(nonce);
 
-            aesGcm.Encrypt(nonce, plainBytes, cipherText, tag);
+                var plainBytes = Encoding.UTF8.GetBytes(plainText);
+                var cipherText = new byte[plainBytes.Length];
+                var tag = new byte[AesGcm.TagByteSizes.MaxSize];
 
-            var result = new byte[nonce.Length + cipherText.Length + tag.Length];
-            Buffer.BlockCopy(nonce, 0, result, 0, nonce.Length);
-            Buffer.BlockCopy(cipherText, 0, result, nonce.Length, cipherText.Length);
-            Buffer.BlockCopy(tag, 0, result, nonce.Length + cipherText.Length, tag.Length);
+                aesGcm.Encrypt(nonce, plainBytes, cipherText, tag);
 
-            return result;
+                var result = new byte[nonce.Length + cipherText.Length + tag.Length];
+                Buffer.BlockCopy(nonce, 0, result, 0, nonce.Length);
+                Buffer.BlockCopy(cipherText, 0, result, nonce.Length, cipherText.Length);
+                Buffer.BlockCopy(tag, 0, result, nonce.Length + cipherText.Length, tag.Length);
+
+                return result;
+            }
+            else
+            {
+                return null;
+            }
         }
+
         public string SymmetricDecrypt(byte[] cipherData, byte[] key)
         {
             ValidateKeyLength(key);
 
-            using var aesGcm = new AesGcm(key);
-            var nonceSize = AesGcm.NonceByteSizes.MaxSize;
-            var tagSize = AesGcm.TagByteSizes.MaxSize;
+            if (!checkBoxBouncy.Checked)
+            {
+                using var aesGcm = new AesGcm(key);
+                var nonceSize = AesGcm.NonceByteSizes.MaxSize;
+                var tagSize = AesGcm.TagByteSizes.MaxSize;
 
-            var nonce = new byte[nonceSize];
-            var cipherText = new byte[cipherData.Length - nonceSize - tagSize];
-            var tag = new byte[tagSize];
+                var nonce = new byte[nonceSize];
+                var cipherText = new byte[cipherData.Length - nonceSize - tagSize];
+                var tag = new byte[tagSize];
 
-            Buffer.BlockCopy(cipherData, 0, nonce, 0, nonceSize);
-            Buffer.BlockCopy(cipherData, nonceSize, cipherText, 0, cipherText.Length);
-            Buffer.BlockCopy(cipherData, nonceSize + cipherText.Length, tag, 0, tagSize);
+                Buffer.BlockCopy(cipherData, 0, nonce, 0, nonceSize);
+                Buffer.BlockCopy(cipherData, nonceSize, cipherText, 0, cipherText.Length);
+                Buffer.BlockCopy(cipherData, nonceSize + cipherText.Length, tag, 0, tagSize);
 
-            var decryptedData = new byte[cipherText.Length];
+                var decryptedData = new byte[cipherText.Length];
 
-            aesGcm.Decrypt(nonce, cipherText, tag, decryptedData);
+                aesGcm.Decrypt(nonce, cipherText, tag, decryptedData);
 
-            return Encoding.UTF8.GetString(decryptedData);
+                return Encoding.UTF8.GetString(decryptedData);
+            }
+            else
+            {
+                return null;
+            }
         }
 
 
@@ -188,6 +219,5 @@ namespace DotNet.TestAsymmetric
             if (key.Count != 16 && key.Count != 24 && key.Count != 32)
                 throw new ArgumentException("Key must be 128, 192, or 256 bits.");
         }
-
     }
 }

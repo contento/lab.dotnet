@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            checkBoxRandomSecret = new CheckBox();
             groupBox1 = new GroupBox();
             textBoxSecret = new TextBox();
             label4 = new Label();
@@ -42,7 +43,6 @@
             label2 = new Label();
             textBoxClearText = new TextBox();
             label1 = new Label();
-            checkBoxRandomSecret = new CheckBox();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -67,6 +67,19 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1329, 946);
             panel1.TabIndex = 0;
+            // 
+            // checkBoxRandomSecret
+            // 
+            checkBoxRandomSecret.AutoSize = true;
+            checkBoxRandomSecret.Checked = true;
+            checkBoxRandomSecret.CheckState = CheckState.Checked;
+            checkBoxRandomSecret.Enabled = false;
+            checkBoxRandomSecret.Location = new Point(127, 120);
+            checkBoxRandomSecret.Name = "checkBoxRandomSecret";
+            checkBoxRandomSecret.Size = new Size(186, 36);
+            checkBoxRandomSecret.TabIndex = 13;
+            checkBoxRandomSecret.Text = "Randomized!";
+            checkBoxRandomSecret.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -140,8 +153,6 @@
             // checkBoxBouncy
             // 
             checkBoxBouncy.AutoSize = true;
-            checkBoxBouncy.Checked = true;
-            checkBoxBouncy.CheckState = CheckState.Checked;
             checkBoxBouncy.Location = new Point(369, 217);
             checkBoxBouncy.Name = "checkBoxBouncy";
             checkBoxBouncy.Size = new Size(397, 36);
@@ -197,19 +208,6 @@
             label1.Size = new Size(133, 32);
             label1.TabIndex = 0;
             label1.Text = "Clear Text:";
-            // 
-            // checkBoxRandomSecret
-            // 
-            checkBoxRandomSecret.AutoSize = true;
-            checkBoxRandomSecret.Checked = true;
-            checkBoxRandomSecret.CheckState = CheckState.Checked;
-            checkBoxRandomSecret.Enabled = false;
-            checkBoxRandomSecret.Location = new Point(127, 120);
-            checkBoxRandomSecret.Name = "checkBoxRandomSecret";
-            checkBoxRandomSecret.Size = new Size(397, 36);
-            checkBoxRandomSecret.TabIndex = 13;
-            checkBoxRandomSecret.Text = "Use 'BouncyCastle.Cryptography'";
-            checkBoxRandomSecret.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 

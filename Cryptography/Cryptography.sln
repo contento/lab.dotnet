@@ -24,7 +24,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Symmetric", "Symmetric", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Asymmetric", "Asymmetric", "{CB551348-96C1-4DF4-8658-003C34EF5D52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.Asymmetric", "Asymmetric\DotNet\DotNet.TestAsymmetric.csproj", "{329008FF-D665-4D8B-9B3B-62E2C09566D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptographyTester", "CryptographyTester\CryptographyTester.csproj", "{329008FF-D665-4D8B-9B3B-62E2C09566D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.TestAsymmetric", "DotNet.TestAsymmetric\DotNet.TestAsymmetric.csproj", "{53020002-BF66-4CD1-A31C-811CA95E49F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,10 @@ Global
 		{329008FF-D665-4D8B-9B3B-62E2C09566D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{329008FF-D665-4D8B-9B3B-62E2C09566D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{329008FF-D665-4D8B-9B3B-62E2C09566D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53020002-BF66-4CD1-A31C-811CA95E49F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53020002-BF66-4CD1-A31C-811CA95E49F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53020002-BF66-4CD1-A31C-811CA95E49F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53020002-BF66-4CD1-A31C-811CA95E49F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,7 +62,7 @@ Global
 		{64922491-2D17-439D-AE5D-86B021849679} = {E15933F9-B2F6-4BA3-96BE-9265FAE37B2B}
 		{7664F7E0-CDDE-44FC-B765-35AFBC967879} = {E15933F9-B2F6-4BA3-96BE-9265FAE37B2B}
 		{63121B20-4DA3-42A1-8597-C1038C58CD7C} = {CB551348-96C1-4DF4-8658-003C34EF5D52}
-		{329008FF-D665-4D8B-9B3B-62E2C09566D9} = {CB551348-96C1-4DF4-8658-003C34EF5D52}
+		{53020002-BF66-4CD1-A31C-811CA95E49F3} = {CB551348-96C1-4DF4-8658-003C34EF5D52}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {30253E36-3297-4322-8175-3660335AC93C}

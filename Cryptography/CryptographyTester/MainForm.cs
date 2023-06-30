@@ -1,13 +1,17 @@
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Encodings;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.X509;
 
-namespace DotNet.TestAsymmetric
+namespace CryptographyTester
 {
     public partial class MainForm : Form
     {
@@ -28,7 +32,6 @@ namespace DotNet.TestAsymmetric
         {
             this.Text = $@"Asymmetric Encryption - Subject={SubjectName}";
 
-            // When using the store you may need to mark the certificate as exportable (BouncyCastle).
             _cert = GetCertificate();
             if (_cert == null)
                 throw new InvalidOperationException($"Certificate not found with {SubjectName}");
@@ -37,7 +40,6 @@ namespace DotNet.TestAsymmetric
         private void buttonEncrypt_Click(object sender, EventArgs e)
         {
             DoEncrypt();
-            ;
         }
 
         private void buttonDecrypt_Click(object sender, EventArgs e)
@@ -129,31 +131,20 @@ namespace DotNet.TestAsymmetric
             using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly);
 
-            if (!checkBoxBouncy.Checked)
-            {
-                var certs = store.Certificates.Find(X509FindType.FindBySubjectName, SubjectName, false);
-                return certs.Count > 0 ? certs[0] : null;
-            }
-            else
-            {
-                var signingCert = store.Certificates.Find(X509FindType.FindBySubjectName, SubjectName, false);
-                return (signingCert.Count == 0 ? null : signingCert[0]) ?? throw new InvalidOperationException(
-                    $"Certificate '{SubjectName}' not found");
-            }
+            var certs = store.Certificates.Find(
+                X509FindType.FindBySubjectName, SubjectName, false);
+            // return (signingCert.Count == 0 ? null : signingCert[0]) ?? throw new InvalidOperationException(
+            //     $"Certificate '{SubjectName}' not found");
+            return certs.Count > 0 ? certs[0] : null;
+                      
         }
 
         private byte[]? AsymmetricEncrypt(byte[] plainTextBytes)
         {
             // DO NOT USE ASYMMETRIC ENCRYPTION FOR LARGE DATA !!!
-            if (!checkBoxBouncy.Checked)
+            if (checkBoxBouncy.Checked)
             {
-                var rsaPublicKey = (_cert ?? throw new InvalidOperationException()).GetRSAPublicKey();
-                var cipherBytes = rsaPublicKey?.Encrypt(plainTextBytes, EncryptionPadding);
-                return cipherBytes;
-            }
-            else
-            {
-                var rsaPublicKey = DotNetUtilities.GetRsaPublicKey(_cert.PublicKey.Key as RSACryptoServiceProvider);
+                var rsaPublicKey = DotNetUtilities.GetRsaPublicKey(_cert?.GetRSAPublicKey());
 
                 var encryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest(DigestAlgorithm));
                 encryptEngine.Init(true, rsaPublicKey);
@@ -161,25 +152,60 @@ namespace DotNet.TestAsymmetric
                 var cipherBytes = encryptEngine.ProcessBlock(plainTextBytes, 0, plainTextBytes.Length);
                 return cipherBytes;
             }
+            else
+            {
+                var rsaPublicKey = (_cert ?? throw new InvalidOperationException()).GetRSAPublicKey();
+                var cipherBytes = rsaPublicKey?.Encrypt(plainTextBytes, EncryptionPadding);
+                return cipherBytes;
+            }
         }
 
         private byte[]? AsymmetricDecrypt(byte[] cipherBytes)
         {
-            if (!checkBoxBouncy.Checked)
+            if (checkBoxBouncy.Checked)
             {
-                var rsaPrivateKey = (_cert ?? throw new InvalidOperationException()).GetRSAPrivateKey();
-                var clearBytes = rsaPrivateKey?.Decrypt(cipherBytes, EncryptionPadding);
-                return clearBytes;
+                if (_cert?.PrivateKey is RSACryptoServiceProvider rsaCryptoServiceProvider)
+                {
+                    var keyPair = DotNetUtilities.GetRsaKeyPair(rsaCryptoServiceProvider);
+                    if (keyPair != null)
+                    {
+                        var rsaPrivateKey = keyPair.Private;
+                        var decryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest("SHA-256"));
+                        // rest of your code
+                        var clearBytes = decryptEngine.ProcessBlock(cipherBytes, 0, cipherBytes.Length);
+                        return clearBytes;
+                    }
+                }
+
+
+                // Decrypt
+                // var rsaPrivateKey = DotNetUtilities.GetRsaKeyPair(_cert.PrivateKey as RSACryptoServiceProvider).Private;
+                // var decryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest("SHA-256"));
+                // decryptEngine.Init(false, rsaPrivateKey);
+
+                // var rsaPrivateKey = DotNetUtilities.GetRsaKeyPair(_cert?.GetRSAPrivateKey() as RSACryptoServiceProvider)
+                //     ?.Private;
+                // var decryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest(DigestAlgorithm));
+                // decryptEngine.Init(false, rsaPrivateKey);
+
+                // var clearBytes = decryptEngine.ProcessBlock(cipherBytes, 0, cipherBytes.Length);
+                // return clearBytes;
+
+                return null;
             }
             else
             {
-                var rsaPrivateKey = DotNetUtilities.GetRsaKeyPair(_cert.PrivateKey as RSACryptoServiceProvider).Private;
-                var decryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest(DigestAlgorithm));
-                decryptEngine.Init(false, rsaPrivateKey);
-
-                var clearBytes = decryptEngine.ProcessBlock(cipherBytes, 0, cipherBytes.Length);
+                var rsaPrivateKey = (_cert
+                                     ?? throw new InvalidOperationException()).GetRSAPrivateKey();
+                var clearBytes = rsaPrivateKey?.Decrypt(cipherBytes, EncryptionPadding);
                 return clearBytes;
             }
+        }
+
+        private static void ValidateKeyLength(IReadOnlyCollection<byte> key)
+        {
+            if (key.Count != 16 && key.Count != 24 && key.Count != 32)
+                throw new ArgumentException("Key must be 128, 192, or 256 bits.");
         }
 
         public byte[] SymmetricEncrypt(string plainText, byte[] key)
@@ -187,26 +213,7 @@ namespace DotNet.TestAsymmetric
             ValidateKeyLength(key);
 
 
-            if (!checkBoxBouncy.Checked)
-            {
-                using var aesGcm = new AesGcm(key);
-                var nonce = new byte[AesGcm.NonceByteSizes.MaxSize];
-                RandomNumberGenerator.Fill(nonce);
-
-                var plainBytes = Encoding.UTF8.GetBytes(plainText);
-                var cipherText = new byte[plainBytes.Length];
-                var tag = new byte[AesGcm.TagByteSizes.MaxSize];
-
-                aesGcm.Encrypt(nonce, plainBytes, cipherText, tag);
-
-                var result = new byte[nonce.Length + cipherText.Length + tag.Length];
-                Buffer.BlockCopy(nonce, 0, result, 0, nonce.Length);
-                Buffer.BlockCopy(cipherText, 0, result, nonce.Length, cipherText.Length);
-                Buffer.BlockCopy(tag, 0, result, nonce.Length + cipherText.Length, tag.Length);
-
-                return result;
-            }
-            else
+            if (checkBoxBouncy.Checked)
             {
                 var nonce = new byte[NonceSize];
                 new SecureRandom().NextBytes(nonce);
@@ -226,13 +233,50 @@ namespace DotNet.TestAsymmetric
 
                 return result;
             }
+            else
+            {
+                using var aesGcm = new AesGcm(key);
+                var nonce = new byte[AesGcm.NonceByteSizes.MaxSize];
+                RandomNumberGenerator.Fill(nonce);
+
+                var plainBytes = Encoding.UTF8.GetBytes(plainText);
+                var cipherText = new byte[plainBytes.Length];
+                var tag = new byte[AesGcm.TagByteSizes.MaxSize];
+
+                aesGcm.Encrypt(nonce, plainBytes, cipherText, tag);
+
+                var result = new byte[nonce.Length + cipherText.Length + tag.Length];
+                Buffer.BlockCopy(nonce, 0, result, 0, nonce.Length);
+                Buffer.BlockCopy(cipherText, 0, result, nonce.Length, cipherText.Length);
+                Buffer.BlockCopy(tag, 0, result, nonce.Length + cipherText.Length, tag.Length);
+
+                return result;
+            }
         }
 
         public string SymmetricDecrypt(byte[] cipherData, byte[] key)
         {
             ValidateKeyLength(key);
 
-            if (!checkBoxBouncy.Checked)
+            if (checkBoxBouncy.Checked)
+            {
+                var nonce = new byte[NonceSize];
+                var cipherText = new byte[cipherData.Length - NonceSize];
+
+                Buffer.BlockCopy(cipherData, 0, nonce, 0, NonceSize);
+                Buffer.BlockCopy(cipherData, NonceSize, cipherText, 0, cipherText.Length);
+
+                var cipher = new GcmBlockCipher(new AesEngine());
+                var parameters = new AeadParameters(new KeyParameter(key), MacSize, nonce);
+                cipher.Init(false, parameters);
+
+                var decryptedData = new byte[cipher.GetOutputSize(cipherText.Length)];
+                var len = cipher.ProcessBytes(cipherText, 0, cipherText.Length, decryptedData, 0);
+                cipher.DoFinal(decryptedData, len);
+
+                return Encoding.UTF8.GetString(decryptedData);
+            }
+            else
             {
                 using var aesGcm = new AesGcm(key);
                 var nonceSize = AesGcm.NonceByteSizes.MaxSize;
@@ -252,30 +296,6 @@ namespace DotNet.TestAsymmetric
 
                 return Encoding.UTF8.GetString(decryptedData);
             }
-            else
-            {
-                var nonce = new byte[NonceSize];
-                var cipherText = new byte[cipherData.Length - NonceSize];
-
-                Buffer.BlockCopy(cipherData, 0, nonce, 0, NonceSize);
-                Buffer.BlockCopy(cipherData, NonceSize, cipherText, 0, cipherText.Length);
-
-                var cipher = new GcmBlockCipher(new AesEngine());
-                var parameters = new AeadParameters(new KeyParameter(key), MacSize, nonce);
-                cipher.Init(false, parameters);
-
-                var decryptedData = new byte[cipher.GetOutputSize(cipherText.Length)];
-                var len = cipher.ProcessBytes(cipherText, 0, cipherText.Length, decryptedData, 0);
-                cipher.DoFinal(decryptedData, len);
-
-                return Encoding.UTF8.GetString(decryptedData);
-            }
-        }
-
-        private static void ValidateKeyLength(IReadOnlyCollection<byte> key)
-        {
-            if (key.Count != 16 && key.Count != 24 && key.Count != 32)
-                throw new ArgumentException("Key must be 128, 192, or 256 bits.");
         }
     }
 }

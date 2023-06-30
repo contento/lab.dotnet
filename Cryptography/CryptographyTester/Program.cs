@@ -1,6 +1,6 @@
 using DotNet.TestAsymmetric;
 
-namespace DotNet
+namespace CryptographyTester
 {
     internal static class Program
     {

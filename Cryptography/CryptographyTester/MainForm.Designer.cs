@@ -1,4 +1,4 @@
-﻿namespace DotNet.TestAsymmetric
+﻿namespace CryptographyTester
 {
     partial class MainForm
     {
@@ -42,12 +42,14 @@
             label2 = new Label();
             textBoxClearText = new TextBox();
             label1 = new Label();
+            checkBoxRandomSecret = new CheckBox();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
             panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panel1.Controls.Add(checkBoxRandomSecret);
             panel1.Controls.Add(groupBox1);
             panel1.Controls.Add(textBoxSecret);
             panel1.Controls.Add(label4);
@@ -138,6 +140,8 @@
             // checkBoxBouncy
             // 
             checkBoxBouncy.AutoSize = true;
+            checkBoxBouncy.Checked = true;
+            checkBoxBouncy.CheckState = CheckState.Checked;
             checkBoxBouncy.Location = new Point(369, 217);
             checkBoxBouncy.Name = "checkBoxBouncy";
             checkBoxBouncy.Size = new Size(397, 36);
@@ -194,6 +198,19 @@
             label1.TabIndex = 0;
             label1.Text = "Clear Text:";
             // 
+            // checkBoxRandomSecret
+            // 
+            checkBoxRandomSecret.AutoSize = true;
+            checkBoxRandomSecret.Checked = true;
+            checkBoxRandomSecret.CheckState = CheckState.Checked;
+            checkBoxRandomSecret.Enabled = false;
+            checkBoxRandomSecret.Location = new Point(127, 120);
+            checkBoxRandomSecret.Name = "checkBoxRandomSecret";
+            checkBoxRandomSecret.Size = new Size(397, 36);
+            checkBoxRandomSecret.TabIndex = 13;
+            checkBoxRandomSecret.Text = "Use 'BouncyCastle.Cryptography'";
+            checkBoxRandomSecret.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
@@ -224,5 +241,6 @@
         private TextBox textBoxSecret;
         private Label label4;
         private GroupBox groupBox1;
+        private CheckBox checkBoxRandomSecret;
     }
 }

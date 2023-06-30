@@ -1,6 +1,11 @@
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Org.BouncyCastle.Crypto.Encodings;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
 
 namespace DotNet.TestAsymmetric
 {
@@ -10,6 +15,9 @@ namespace DotNet.TestAsymmetric
         private const string SubjectName = "api.example.com";
         private static readonly RSAEncryptionPadding EncryptionPadding = RSAEncryptionPadding.OaepSHA256;
         private const int SymmetricKeySize = 16;
+        private const int NonceSize = 12;
+        private const int MacSize = 8 * SymmetricKeySize;
+        private const string DigestAlgorithm = "SHA-256";
 
         public MainForm()
         {
@@ -116,26 +124,42 @@ namespace DotNet.TestAsymmetric
             textBoxClearText.Text = clearText;
         }
 
-        private static X509Certificate2? GetCertificate()
+        private X509Certificate2? GetCertificate()
         {
             using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly);
-            var certs = store.Certificates.Find(X509FindType.FindBySubjectName, SubjectName, false);
-            return certs.Count > 0 ? certs[0] : null;
+
+            if (!checkBoxBouncy.Checked)
+            {
+                var certs = store.Certificates.Find(X509FindType.FindBySubjectName, SubjectName, false);
+                return certs.Count > 0 ? certs[0] : null;
+            }
+            else
+            {
+                var signingCert = store.Certificates.Find(X509FindType.FindBySubjectName, SubjectName, false);
+                return (signingCert.Count == 0 ? null : signingCert[0]) ?? throw new InvalidOperationException(
+                    $"Certificate '{SubjectName}' not found");
+            }
         }
 
         private byte[]? AsymmetricEncrypt(byte[] plainTextBytes)
         {
+            // DO NOT USE ASYMMETRIC ENCRYPTION FOR LARGE DATA !!!
             if (!checkBoxBouncy.Checked)
             {
-                // DO NOT USE ASYMMETRIC ENCRYPTION FOR LARGE DATA !!!
                 var rsaPublicKey = (_cert ?? throw new InvalidOperationException()).GetRSAPublicKey();
                 var cipherBytes = rsaPublicKey?.Encrypt(plainTextBytes, EncryptionPadding);
                 return cipherBytes;
             }
             else
             {
-                return null;
+                var rsaPublicKey = DotNetUtilities.GetRsaPublicKey(_cert.PublicKey.Key as RSACryptoServiceProvider);
+
+                var encryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest(DigestAlgorithm));
+                encryptEngine.Init(true, rsaPublicKey);
+
+                var cipherBytes = encryptEngine.ProcessBlock(plainTextBytes, 0, plainTextBytes.Length);
+                return cipherBytes;
             }
         }
 
@@ -149,7 +173,12 @@ namespace DotNet.TestAsymmetric
             }
             else
             {
-                return null;
+                var rsaPrivateKey = DotNetUtilities.GetRsaKeyPair(_cert.PrivateKey as RSACryptoServiceProvider).Private;
+                var decryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest(DigestAlgorithm));
+                decryptEngine.Init(false, rsaPrivateKey);
+
+                var clearBytes = decryptEngine.ProcessBlock(cipherBytes, 0, cipherBytes.Length);
+                return clearBytes;
             }
         }
 
@@ -179,7 +208,23 @@ namespace DotNet.TestAsymmetric
             }
             else
             {
-                return null;
+                var nonce = new byte[NonceSize];
+                new SecureRandom().NextBytes(nonce);
+
+                var plainBytes = Encoding.UTF8.GetBytes(plainText);
+                var cipher = new GcmBlockCipher(new AesEngine());
+                var parameters = new AeadParameters(new KeyParameter(key), MacSize, nonce);
+                cipher.Init(true, parameters);
+
+                var cipherText = new byte[cipher.GetOutputSize(plainBytes.Length)];
+                var len = cipher.ProcessBytes(plainBytes, 0, plainBytes.Length, cipherText, 0);
+                cipher.DoFinal(cipherText, len);
+
+                var result = new byte[nonce.Length + cipherText.Length];
+                Buffer.BlockCopy(nonce, 0, result, 0, nonce.Length);
+                Buffer.BlockCopy(cipherText, 0, result, nonce.Length, cipherText.Length);
+
+                return result;
             }
         }
 
@@ -209,10 +254,23 @@ namespace DotNet.TestAsymmetric
             }
             else
             {
-                return null;
+                var nonce = new byte[NonceSize];
+                var cipherText = new byte[cipherData.Length - NonceSize];
+
+                Buffer.BlockCopy(cipherData, 0, nonce, 0, NonceSize);
+                Buffer.BlockCopy(cipherData, NonceSize, cipherText, 0, cipherText.Length);
+
+                var cipher = new GcmBlockCipher(new AesEngine());
+                var parameters = new AeadParameters(new KeyParameter(key), MacSize, nonce);
+                cipher.Init(false, parameters);
+
+                var decryptedData = new byte[cipher.GetOutputSize(cipherText.Length)];
+                var len = cipher.ProcessBytes(cipherText, 0, cipherText.Length, decryptedData, 0);
+                cipher.DoFinal(decryptedData, len);
+
+                return Encoding.UTF8.GetString(decryptedData);
             }
         }
-
 
         private static void ValidateKeyLength(IReadOnlyCollection<byte> key)
         {

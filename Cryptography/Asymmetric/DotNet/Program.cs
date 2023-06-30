@@ -5,6 +5,7 @@ using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Security;
 using static System.Console;
 
+const string certificatePath = "./files/certificate.pfx";
 const string subjectName = "api.example.com";
 const string digestAlgorithm = "SHA-256";
 
@@ -14,7 +15,7 @@ WriteLine($"Plain text:\n{plainText}");
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // When using the store make sure you mark the certificate as exportable.
 // (BouncyCastle needs it) !!!
-var cert = GetCertificate(false);
+            var cert = GetCertificate(fromFile: false);
 if (cert is null)
 {
     throw new InvalidOperationException($"Certificate with subject name {subjectName}");
@@ -33,8 +34,8 @@ var encryptedData = encryptEngine.ProcessBlock(plainTextBytes, 0, plainTextBytes
 WriteLine($"\nEncrypted Data:\n{Convert.ToBase64String(encryptedData)}");
 
 // Decrypt
-var rsaPrivateKey = DotNetUtilities.GetKeyPair(cert.GetRSAPrivateKey()).Private;
 var decryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest(digestAlgorithm));
+var rsaPrivateKey = DotNetUtilities.GetKeyPair(cert.GetRSAPrivateKey()).Private;
 decryptEngine.Init(false, rsaPrivateKey);
 
 var decryptedData = decryptEngine.ProcessBlock(encryptedData, 0, encryptedData.Length);
@@ -44,7 +45,6 @@ static X509Certificate2? GetCertificate(bool fromFile)
 {
     if (fromFile)
     {
-        const string certificatePath = "./files/certificate.pfx";
         var certificate = new X509Certificate2(certificatePath, "", X509KeyStorageFlags.Exportable);
         return certificate;
     }

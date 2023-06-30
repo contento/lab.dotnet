@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Asymmetric", "Asymmetric", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptographyTester", "CryptographyTester\CryptographyTester.csproj", "{329008FF-D665-4D8B-9B3B-62E2C09566D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.TestAsymmetric", "DotNet.TestAsymmetric\DotNet.TestAsymmetric.csproj", "{53020002-BF66-4CD1-A31C-811CA95E49F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet.TestAsymmetric", "Asymmetric\DotNet\DotNet.TestAsymmetric.csproj", "{53020002-BF66-4CD1-A31C-811CA95E49F3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

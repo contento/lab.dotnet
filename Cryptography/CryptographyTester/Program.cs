@@ -1,5 +1,3 @@
-using DotNet.TestAsymmetric;
-
 namespace CryptographyTester
 {
     internal static class Program

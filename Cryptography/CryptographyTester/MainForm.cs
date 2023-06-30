@@ -133,18 +133,18 @@ namespace CryptographyTester
 
             var certs = store.Certificates.Find(
                 X509FindType.FindBySubjectName, SubjectName, false);
-            // return (signingCert.Count == 0 ? null : signingCert[0]) ?? throw new InvalidOperationException(
-            //     $"Certificate '{SubjectName}' not found");
+
             return certs.Count > 0 ? certs[0] : null;
-                      
         }
 
         private byte[]? AsymmetricEncrypt(byte[] plainTextBytes)
         {
+            Debug.Assert(_cert != null, nameof(_cert) + " != null");
+
             // DO NOT USE ASYMMETRIC ENCRYPTION FOR LARGE DATA !!!
             if (checkBoxBouncy.Checked)
             {
-                var rsaPublicKey = DotNetUtilities.GetRsaPublicKey(_cert?.GetRSAPublicKey());
+                var rsaPublicKey = DotNetUtilities.GetRsaPublicKey(_cert.GetRSAPublicKey());
 
                 var encryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest(DigestAlgorithm));
                 encryptEngine.Init(true, rsaPublicKey);
@@ -162,36 +162,15 @@ namespace CryptographyTester
 
         private byte[]? AsymmetricDecrypt(byte[] cipherBytes)
         {
+            Debug.Assert(_cert != null, nameof(_cert) + " != null");
+
             if (checkBoxBouncy.Checked)
             {
-                if (_cert?.PrivateKey is RSACryptoServiceProvider rsaCryptoServiceProvider)
-                {
-                    var keyPair = DotNetUtilities.GetRsaKeyPair(rsaCryptoServiceProvider);
-                    if (keyPair != null)
-                    {
-                        var rsaPrivateKey = keyPair.Private;
-                        var decryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest("SHA-256"));
-                        // rest of your code
-                        var clearBytes = decryptEngine.ProcessBlock(cipherBytes, 0, cipherBytes.Length);
-                        return clearBytes;
-                    }
-                }
-
-
-                // Decrypt
-                // var rsaPrivateKey = DotNetUtilities.GetRsaKeyPair(_cert.PrivateKey as RSACryptoServiceProvider).Private;
-                // var decryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest("SHA-256"));
-                // decryptEngine.Init(false, rsaPrivateKey);
-
-                // var rsaPrivateKey = DotNetUtilities.GetRsaKeyPair(_cert?.GetRSAPrivateKey() as RSACryptoServiceProvider)
-                //     ?.Private;
-                // var decryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest(DigestAlgorithm));
-                // decryptEngine.Init(false, rsaPrivateKey);
-
-                // var clearBytes = decryptEngine.ProcessBlock(cipherBytes, 0, cipherBytes.Length);
-                // return clearBytes;
-
-                return null;
+                var decryptEngine = new OaepEncoding(new RsaEngine(), DigestUtilities.GetDigest(DigestAlgorithm));
+                var rsaPrivateKey = DotNetUtilities.GetKeyPair(_cert.GetRSAPrivateKey()).Private;
+                decryptEngine.Init(false, rsaPrivateKey);
+                var clearBytes = decryptEngine.ProcessBlock(cipherBytes, 0, cipherBytes.Length);
+                return clearBytes;
             }
             else
             {

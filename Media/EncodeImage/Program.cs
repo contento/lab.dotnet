@@ -27,6 +27,10 @@ class Program
             string jsContent = FormatAsJavaScript(base64String);
             SaveToFile(Path.ChangeExtension(imagePath, ".js"), jsContent);
             Console.WriteLine("Base64 string saved to: " + Path.ChangeExtension(imagePath, ".js"));
+
+            string htmlContent = GenerateHtml(imagePath, base64String);
+            SaveToFile(Path.ChangeExtension(imagePath, ".html"), htmlContent);
+            Console.WriteLine("HTML file saved to: " + Path.ChangeExtension(imagePath, ".html"));
         }
         catch (Exception ex)
         {
@@ -65,5 +69,23 @@ class Program
 
         jsContent.Append("';");
         return jsContent.ToString();
+    }
+
+    static string GenerateHtml(string imagePath, string base64String)
+    {
+        string imageExtension = Path.GetExtension(imagePath).TrimStart('.').ToLower();
+        string imageDataUrl = $"data:image/{imageExtension};base64,{base64String}";
+
+        StringBuilder htmlContent = new StringBuilder();
+        htmlContent.Append("<!DOCTYPE html>\n<html>\n<head>\n<title>Image and Base64</title>\n</head>\n<body>\n");
+        htmlContent.Append("<h1>Original Image</h1>\n");
+        htmlContent.Append($"<img src=\"{imageDataUrl}\" alt=\"Image\" />\n");
+        htmlContent.Append("<h1>Base64 Encoded String</h1>\n");
+        htmlContent.Append("<textarea rows=\"20\" cols=\"80\" readonly>\n");
+        htmlContent.Append(base64String);
+        htmlContent.Append("</textarea>\n");
+        htmlContent.Append("</body>\n</html>");
+
+        return htmlContent.ToString();
     }
 }

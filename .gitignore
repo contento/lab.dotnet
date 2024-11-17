@@ -287,3 +287,6 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+Media/EncodeImage/assets/image-01.html
+Media/EncodeImage/assets/image-01.js
+Media/EncodeImage/assets/image-01.txt

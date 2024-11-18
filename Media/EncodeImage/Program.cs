@@ -1,8 +1,10 @@
 ﻿using System.Text;
 
-class Program
+namespace EncodeImage;
+
+internal class Program
 {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         if (args.Length != 1)
         {
@@ -10,7 +12,7 @@ class Program
             return;
         }
 
-        string imagePath = args[0];
+        var imagePath = args[0];
         if (!File.Exists(imagePath))
         {
             Console.WriteLine("File not found: " + imagePath);
@@ -19,17 +21,17 @@ class Program
 
         try
         {
-            string base64String = ConvertImageToBase64(imagePath);
+            var base64String = ConvertImageToBase64(imagePath);
 
             SaveToFile(Path.ChangeExtension(imagePath, ".txt"), base64String);
             Console.WriteLine("Base64 string saved to: " + Path.ChangeExtension(imagePath, ".txt"));
 
-            string jsContent = FormatAsJavaScript(base64String);
-            string jsFilePath = Path.ChangeExtension(imagePath, ".js");
+            var jsContent = FormatAsJavaScript(base64String);
+            var jsFilePath = Path.ChangeExtension(imagePath, ".js");
             SaveToFile(jsFilePath, jsContent);
             Console.WriteLine("Base64 string saved to: " + jsFilePath);
 
-            string htmlContent = GenerateHtml(imagePath, jsFilePath);
+            var htmlContent = GenerateHtml(imagePath, jsFilePath);
             SaveToFile(Path.ChangeExtension(imagePath, ".html"), htmlContent);
             Console.WriteLine("HTML file saved to: " + Path.ChangeExtension(imagePath, ".html"));
         }
@@ -39,23 +41,23 @@ class Program
         }
     }
 
-    static string ConvertImageToBase64(string imagePath)
+    private static string ConvertImageToBase64(string imagePath)
     {
-        byte[] imageBytes = File.ReadAllBytes(imagePath);
+        var imageBytes = File.ReadAllBytes(imagePath);
         return Convert.ToBase64String(imageBytes);
     }
 
-    static void SaveToFile(string filePath, string content)
+    private static void SaveToFile(string filePath, string content)
     {
         File.WriteAllText(filePath, content);
     }
 
-    static string FormatAsJavaScript(string base64String)
+    private static string FormatAsJavaScript(string base64String)
     {
-        StringBuilder jsContent = new StringBuilder();
+        var jsContent = new StringBuilder();
         jsContent.Append("const image = '");
         jsContent.Append("'+\n'");
-        for (int i = 0; i < base64String.Length; i += 80)
+        for (var i = 0; i < base64String.Length; i += 80)
         {
             if (i + 80 < base64String.Length)
             {
@@ -72,12 +74,12 @@ class Program
         return jsContent.ToString();
     }
 
-    static string GenerateHtml(string imagePath, string jsFilePath)
+    private static string GenerateHtml(string imagePath, string jsFilePath)
     {
-        string imageExtension = Path.GetExtension(imagePath).TrimStart('.').ToLower();
-        string jsFileName = Path.GetFileName(jsFilePath);
+        var imageExtension = Path.GetExtension(imagePath).TrimStart('.').ToLower();
+        var jsFileName = Path.GetFileName(jsFilePath);
 
-        StringBuilder htmlContent = new StringBuilder();
+        var htmlContent = new StringBuilder();
         htmlContent.Append("<!DOCTYPE html>\n<html>\n<head>\n<title>Image and Base64</title>\n");
         htmlContent.Append($"<link id=\"favicon\" rel=\"icon\" type=\"image/{imageExtension}\" href=\"\" />\n");
         htmlContent.Append($"<script src=\"{jsFileName}\"></script>\n");

@@ -79,17 +79,17 @@ class Program
 
         StringBuilder htmlContent = new StringBuilder();
         htmlContent.Append("<!DOCTYPE html>\n<html>\n<head>\n<title>Image and Base64</title>\n");
-        htmlContent.Append($"<link rel=\"icon\" type=\"image/{imageExtension}\" href=\"{jsFileName}\" />\n");
+        htmlContent.Append($"<link id=\"favicon\" rel=\"icon\" type=\"image/{imageExtension}\" href=\"\" />\n");
         htmlContent.Append($"<script src=\"{jsFileName}\"></script>\n");
         htmlContent.Append("</head>\n<body>\n");
         htmlContent.Append("<h1>Original Image</h1>\n");
-        htmlContent.Append("<script>\n");
-        htmlContent.Append("document.write('<img src=\"data:image/" + imageExtension + ";base64,' + image + '\" alt=\"Image\" />');\n");
-        htmlContent.Append("</script>\n");
+        htmlContent.Append("<img id=\"originalImage\" alt=\"Image\" />\n");
         htmlContent.Append("<h1>Base64 Encoded String</h1>\n");
         htmlContent.Append("<textarea id=\"base64TextArea\" rows=\"20\" cols=\"80\" readonly></textarea>\n");
         htmlContent.Append("<script>\n");
+        htmlContent.Append("document.getElementById('originalImage').src = 'data:image/" + imageExtension + ";base64,' + image;\n");
         htmlContent.Append("document.getElementById('base64TextArea').value = image;\n");
+        htmlContent.Append("document.getElementById('favicon').href = 'data:image/" + imageExtension + ";base64,' + image;\n");
         htmlContent.Append("</script>\n");
         htmlContent.Append("</body>\n</html>");
 

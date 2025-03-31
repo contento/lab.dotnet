@@ -20,10 +20,13 @@ openssl pkcs12 -in certificate.pfx -clcerts -nokeys -out certificate-pub.cer
 ## Install openssl [Optional]
 
 ``` shell
-winget install openssl
-# or with other package managers
-# scoop install openssl
-# choco install openssl
+winget install ShiningLight.OpenSSL.Light
+
+# or with package managers
+
+scoop install openssl
+
+choco install openssl
 
 # Important! 
 # You may need to add to the environment variable %PATH% ($Env:Path) the path to openssl, for example:

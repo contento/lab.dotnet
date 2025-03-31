@@ -290,3 +290,7 @@ __pycache__/
 Media/EncodeImage/assets/image-01.html
 Media/EncodeImage/assets/image-01.js
 Media/EncodeImage/assets/image-01.txt
+/Cryptography/files/certificate-pub.cer
+/Cryptography/files/certificate.cer
+/Cryptography/files/key.pem
+/Cryptography/files/key.pub
